@@ -7,6 +7,11 @@ from setting import *
 import time
 import sys
 import asyncio
+import queue
+
+q = queue.Queue()
+for i in URLS:
+    q.put(i)
 
 
 def costTime(func):
@@ -22,13 +27,13 @@ def costTime(func):
 sys.path.append("..")
 
 
-class Spiders():
+class Spiders(object):
     def __init__(self):
         self.r = my_wokres.RedisWorker.redisQueue('new')
         self.html = HtmlDownloader(None)
         self.parser = HtmlParser()
         self.dataout = DataOutput()
-        self.r.put(URLS)
+        # self.r.put(URLS)
 
     def start(self):
         while self.r.get_size() != 0:
@@ -40,15 +45,15 @@ class Spiders():
 
     def process_start(self):
         process = []
-        for i in range(THREADNUM):
+        for thread in range(THREADNUM):
             p = Process(target=self.start, args=())
             process.append(p)
-        for i in range(THREADNUM):
-            logger.info('Process %s running........' % i)
-            process[i].start()
-        for i in range(THREADNUM):
-            process[i].join()
-            logger.info('Process %s completed........' % i)
+        for thread in range(THREADNUM):
+            logger.info('Process %s running........' % thread)
+            process[thread].start()
+        for thread in range(THREADNUM):
+            process[thread].join()
+            logger.info('Process %s completed........' % thread)
 
     @costTime
     def run(self):
@@ -57,7 +62,7 @@ class Spiders():
         else:
             self.start()
 
-    async def asyncrun(self, url):
+    async def asyncRun(self, url):
         html = await self.html.download(url)
         data = self.parser.parser(url, html)
         print(data)
@@ -65,21 +70,18 @@ class Spiders():
 
     @costTime
     def eventLoop(self):
-        urls = [i.decode() for i in self.r.get_all()]
-        tasks = [self.asyncrun(url) for url in urls]
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(asyncio.wait(tasks))
-
+        n = 0
+        while q.qsize() != 0:
+            print('di %s ci' % n)
+            urls = [q.get() for _ in range(DistributedNum)]
+            tasks = [self.asyncRun(url) for url in urls]
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(asyncio.wait(tasks))
+            n += 1
+            print('%s jieshu'  % n)
+            time.sleep(10)
 
 spider = Spiders()
 if __name__ == '__main__':
     work = Spiders()
     work.eventLoop()
-
-    # def sua():
-    #     n = 0
-    #     for i in range(1000):
-    #         n += i
-    #
-    #
-    # sua()

@@ -2,7 +2,7 @@ import redis
 from setting import *
 
 
-class redisQueue:
+class redisQueue(object):
     def __init__(self, name, namespace='my'):
         self.__db = redis.from_url(REDIS_URL)
         self.key = '%s:%s' % (namespace, name)

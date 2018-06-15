@@ -1,3 +1,7 @@
+"""
+配置文件
+可以配置线程，代理，解析规则，数据库路径
+"""
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -14,7 +18,7 @@ HEADERS = {
 PROXYIP = False
 # 配置 urls
 URLS = ['http://sou.zhaopin.com/jobs/searchresult.ashx?in=160400&jl=%E5%8C%97%E4%BA%AC&p={}&isadv=0'.format(i) for i in
-        range(100)]
+        range(500)]
 # s = urls.find({}).limit(2)
 # for i in s:
 #     URLS.append(i['url'])
@@ -25,11 +29,15 @@ REGULARS = {
 
 XPAHTS = {
     'name': '//*[@id="newlist_list_content_table"]/table/tr[1]/td[1]/div/a/text()',
-    'companys_name': '//*[@id="newlist_list_content_table"]/table/tr[1]/td[3]/a[1]/text()',
+    'company_name': '//*[@id="newlist_list_content_table"]/table/tr[1]/td[3]/a[1]/text()',
     'price': '//*[@id="newlist_list_content_table"]/table/tr[1]/td[4]/text()',
 }
 
 # redis 路径
-REDIS_URL = "redis://47.98.165.242:6379"
+REDIS_URL = "redis://localhost:6379"
 # mongo 路径
-MONGO_URL = 'mongodb://127.0.0.1:27017'
+MONGO_URL = 'mongodb://localhost:27017'
+
+# 分布式
+Distributed = True
+DistributedNum = 100

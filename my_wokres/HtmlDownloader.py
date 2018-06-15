@@ -7,9 +7,11 @@ import aiohttp
 
 class HtmlDownloader(object):
     def __init__(self, proxy_bool=None):
+        self.proxy = None
         self.bool = proxy_bool
 
-    def _get_ip(self):
+    @staticmethod
+    def _get_ip():
         url = 'http://127.0.0.1:5555/ip'
         ip = requests.get(url).text
         proxy = {
@@ -19,10 +21,10 @@ class HtmlDownloader(object):
         return proxy
 
     async def download(self, url):
-        if self.bool == True:
+        if self.bool:
             self.proxy = self._get_ip()
         else:
-            self.proxy = None
+            pass
         if url is None:
             return None
 

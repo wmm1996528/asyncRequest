@@ -21,16 +21,18 @@ class HtmlParser(object):
         :param html_cont: content
         :return: url 和数据
         '''
-        if htmls == None:
+        if htmls is None:
             return
         try:
             h = etree.HTML(htmls)
         except:
             h = etree.fromstring(htmls)
         # res =
-        res = self._get_datas(url, h)
+        res = self.get_data(h)
         return res
-    def _get_datas(self, url, html):
+
+    @staticmethod
+    def get_data(html):
         try:
             data = {}
             for i in XPAHTS.items():
@@ -43,7 +45,7 @@ class HtmlParser(object):
                 data.update({
                     name: names
                 })
-            return  data
+            return data
         except Exception as e:
             logger.warning(traceback.format_exc())
 
