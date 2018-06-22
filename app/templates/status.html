@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Dashboard - pyspider</title>
+    <!--[if lt IE 9]>
+    <![endif]-->
+
+    <meta name="description" content="pyspider dashboard">
+    <meta name="author" content="binux">
+    <script src="http://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
+    <link href="http://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
+    <script src="http://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="text-center">
+                Spider
+            </h3>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <th class=".col-xs-6 .col-sm-4">任务进度</th>
+        <th class=".col-xs-6 .col-sm-4">总数量</th>
+        <th class=".col-xs-6 .col-sm-4">完成数量</th>
+        <th class=".col-xs-6 .col-sm-4">剩余数量</th>
+        <th class=".col-xs-6 .col-sm-4">已运行时间</th>
+        <th class=".col-xs-6 .col-sm-4">预计完成时间</th>
+        </thead>
+        <tbody>
+        <td>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="{{datas[2]}}" aria-valuemin="0"
+                     aria-valuemax="{{datas[1]}}"
+                     style="width: {{datas[0]}}%; min-width: 4em;">
+                    {{datas[0]}}%
+                </div>
+            </div>
+        </td>
+        {% for data in datas[1:-1] %}
+        <td class="ls">{{data}}</td>
+        {% endfor %}
+        <td id="schemd">{{datas[-1]}}秒</td>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-default navbar-btn"><a href="/result?limit=20&offset=0">result</a></button>
+</div>
+</body>
+</html>
+
+<script>
+    tl = window.setInterval(
+        function () {
+            $.get('/speed', function (string) {
+                var data = eval('(' + string + ')');
+                console.log(data)
+                console.log(typeof data)
+                console.log(typeof data['wait'])
+                if (data['wait'] == 0) {
+                    console.log('ada')
+                    window.clearInterval(tl)
+                    $("#schemd").html('已完成')
+                }
+                else {
+
+                    // console.log(data)
+                    time = data['timeNum'];
+                    progess = data['progess'];
+                    wait = data['wait'];
+                    now = data['nowNum'];
+                    $('.progress-bar').attr('style', 'width: ' + progess + '%; min-width: 4em;')
+                    $('.progress-bar').html(progess + '%')
+                    $('.ls').eq(1).html(now)
+                    $('.ls').eq(2).html(wait)
+                    // $('.ls').eq(2).html(wait)
+                    $("#schemd").html(time + '秒')
+                }
+            })
+        }, 1000)
+
+</script>
+<!-- vim: set et sw=2 ts=2 sts=2 ff=unix fenc=utf8 syntax=htmldjango: -->

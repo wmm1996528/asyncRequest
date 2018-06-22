@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Results - taobaomm - pyspider</title>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <meta name="description" content="result of taobaomm">
+    <meta name="author" content="binux">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/result.min.css" rel="stylesheet">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="top-bar">
+    <h1>taobaomm - Results</h1>
+    <div class="btn-group">
+        <a href="/result/dump/taobaomm.json"
+           target="_blank" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-download-alt"></span>
+            JSON</a>
+        <a href="/result/dump/taobaomm.txt"
+           target="_blank" class="btn btn-default btn-sm">URL-JSON</a>
+        <a href="/result/dump/taobaomm.csv"
+           target="_blank" class="btn btn-default btn-sm">CSV</a>
+    </div>
+</div>
+<table class="table table-condensed table-striped">
+    <thead>
+    {% for name in data_name %}
+    <th>{{name}}</th>
+    {% endfor %}
+    </thead>
+    <tbody>
+    {% for data in datas%}
+    <tr>
+        {% for i in data_name %}
+        <td> {{data[i]}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination-wrap">
+    <ul class="pagination">
+        <li class="disabled">
+            <a href="">&laquo;</a>
+        </li>
+        {% for i in range(len//limit +1) %}
+        <li >
+            <a href="/result?offset={{i*limit}}&limit={{limit}}">{{i}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>

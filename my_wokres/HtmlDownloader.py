@@ -4,27 +4,18 @@ import time
 from setting import *
 import aiohttp
 
+requests.packages.urllib3.disable_warnings()
+
 
 class HtmlDownloader(object):
-    def __init__(self, proxy_bool=None):
+    def __init__(self):
         self.proxy = None
-        self.bool = proxy_bool
-
-    @staticmethod
-    def _get_ip():
-        url = 'http://127.0.0.1:5555/ip'
-        ip = requests.get(url).text
-        proxy = {
-            'http': ip,
-            'https': ip,
-        }
-        return proxy
+        self.bool = PROXYIP
+        self.session = requests.session()
+        # if self.bool is True:
+        #     get_ip()
 
     async def download(self, url):
-        if self.bool:
-            self.proxy = self._get_ip()
-        else:
-            pass
         if url is None:
             return None
 
@@ -38,3 +29,17 @@ class HtmlDownloader(object):
                         logger.warning(res.status)
 
                     time.sleep(0.5)
+
+    def downnload_not_wait(self, url):
+        global proxies
+        print(proxies)
+        if url is None:
+            return None
+        while True:
+            try:
+                res = requests.get(url.decode(), headers=HEADERS, proxies=proxies, timeout=10, verify=False)
+                RedisWorker.redisdb.put_old(url)
+                return res.text
+            except Exception as e:
+                print(e)
+                proxies = get_ip()
